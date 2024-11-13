@@ -18,9 +18,10 @@
  */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (global.QRious = factory());
-}(this, (function () { 'use strict';
+    typeof define === 'function' && define.amd ? define(factory) :
+      (global.QRious = factory());
+}(this, (function () {
+  'use strict';
 
   /*
    * Copyright (C) 2017 Alasdair Mercer, !ninja
@@ -50,7 +51,7 @@
    * @private
    * @constructor
    */
-  var Constructor = /* istanbul ignore next */ function() {};
+  var Constructor = /* istanbul ignore next */ function () { };
   /**
    * A reference to <code>Object.prototype.hasOwnProperty</code>.
    *
@@ -128,7 +129,7 @@
     if (typeof constructor !== 'function') {
       statics = prototype;
       prototype = constructor;
-      constructor = function() {
+      constructor = function () {
         return superConstructor.apply(this, arguments);
       };
     }
@@ -181,7 +182,7 @@
    * @public
    * @constructor
    */
-  function Nevis() {}
+  function Nevis() { }
   Nevis.class_ = 'Nevis';
   Nevis.super_ = Object;
 
@@ -229,7 +230,7 @@
    * @class
    * @extends Nevis
    */
-  var Renderer = lite.extend(function(qrious, element, enabled) {
+  var Renderer = lite.extend(function (qrious, element, enabled) {
     /**
      * The {@link QRious} instance.
      *
@@ -270,7 +271,7 @@
      * @abstract
      * @memberof Renderer#
      */
-    draw: function(frame) {},
+    draw: function (frame) { },
 
     /**
      * Returns the element onto which this {@link Renderer} is rendering the QR code.
@@ -282,7 +283,7 @@
      * @public
      * @memberof Renderer#
      */
-    getElement: function() {
+    getElement: function () {
       if (!this.enabled) {
         this.enabled = true;
         this.render();
@@ -306,7 +307,7 @@
      * @protected
      * @memberof Renderer#
      */
-    getModuleSize: function(frame) {
+    getModuleSize: function (frame) {
       var qrious = this.qrious;
       var padding = qrious.padding || 0;
       var pixels = Math.floor((qrious.size - (padding * 2)) / frame.width);
@@ -327,7 +328,7 @@
      * @protected
      * @memberof Renderer#
      */
-    getOffset: function(frame) {
+    getOffset: function (frame) {
       var qrious = this.qrious;
       var padding = qrious.padding;
 
@@ -349,7 +350,7 @@
      * @public
      * @memberof Renderer#
      */
-    render: function(frame) {
+    render: function (frame) {
       if (this.enabled) {
         this.resize();
         this.reset();
@@ -367,7 +368,7 @@
      * @abstract
      * @memberof Renderer#
      */
-    reset: function() {},
+    reset: function () { },
 
     /**
      * Ensures that the size of the underlying element matches that defined on the associated {@link QRious} instance.
@@ -379,7 +380,7 @@
      * @abstract
      * @memberof Renderer#
      */
-    resize: function() {}
+    resize: function () { }
 
   });
 
@@ -397,7 +398,7 @@
     /**
      * @override
      */
-    draw: function(frame) {
+    draw: function (frame) {
       var i, j;
       var qrious = this.qrious;
       var moduleSize = this.getModuleSize(frame);
@@ -414,12 +415,20 @@
           }
         }
       }
+
+      /** Gerar labelText */
+      if (Boolean(frame._label)) {
+        context.font = '22px sans-serif';
+        var textWidth = context.measureText(frame._label || "").width;
+        context.fillText(frame._label || "", (this.element.width / 2) - (textWidth / 2), this.element.height);
+      }
+
     },
 
     /**
      * @override
      */
-    reset: function() {
+    reset: function () {
       var qrious = this.qrious;
       var context = this.element.getContext('2d');
       var size = qrious.size;
@@ -434,10 +443,13 @@
     /**
      * @override
      */
-    resize: function() {
+    resize: function () {
       var element = this.element;
 
       element.width = element.height = this.qrious.size;
+
+      /** labelText */
+      element.height += 22;
     }
 
   });
@@ -466,7 +478,7 @@
      * @memberof Alignment
      */
     BLOCK: [
-      0,  11, 15, 19, 23, 27, 31,
+      0, 11, 15, 19, 23, 27, 31,
       16, 18, 20, 22, 24, 26, 28, 20, 22, 24, 24, 26, 28, 28, 22, 24, 24,
       26, 26, 28, 28, 24, 24, 26, 26, 26, 28, 28, 24, 26, 26, 26, 28, 28
     ]
@@ -500,46 +512,46 @@
      * @memberof ErrorCorrection
      */
     BLOCKS: [
-      1,  0,  19,  7,     1,  0,  16,  10,    1,  0,  13,  13,    1,  0,  9,   17,
-      1,  0,  34,  10,    1,  0,  28,  16,    1,  0,  22,  22,    1,  0,  16,  28,
-      1,  0,  55,  15,    1,  0,  44,  26,    2,  0,  17,  18,    2,  0,  13,  22,
-      1,  0,  80,  20,    2,  0,  32,  18,    2,  0,  24,  26,    4,  0,  9,   16,
-      1,  0,  108, 26,    2,  0,  43,  24,    2,  2,  15,  18,    2,  2,  11,  22,
-      2,  0,  68,  18,    4,  0,  27,  16,    4,  0,  19,  24,    4,  0,  15,  28,
-      2,  0,  78,  20,    4,  0,  31,  18,    2,  4,  14,  18,    4,  1,  13,  26,
-      2,  0,  97,  24,    2,  2,  38,  22,    4,  2,  18,  22,    4,  2,  14,  26,
-      2,  0,  116, 30,    3,  2,  36,  22,    4,  4,  16,  20,    4,  4,  12,  24,
-      2,  2,  68,  18,    4,  1,  43,  26,    6,  2,  19,  24,    6,  2,  15,  28,
-      4,  0,  81,  20,    1,  4,  50,  30,    4,  4,  22,  28,    3,  8,  12,  24,
-      2,  2,  92,  24,    6,  2,  36,  22,    4,  6,  20,  26,    7,  4,  14,  28,
-      4,  0,  107, 26,    8,  1,  37,  22,    8,  4,  20,  24,    12, 4,  11,  22,
-      3,  1,  115, 30,    4,  5,  40,  24,    11, 5,  16,  20,    11, 5,  12,  24,
-      5,  1,  87,  22,    5,  5,  41,  24,    5,  7,  24,  30,    11, 7,  12,  24,
-      5,  1,  98,  24,    7,  3,  45,  28,    15, 2,  19,  24,    3,  13, 15,  30,
-      1,  5,  107, 28,    10, 1,  46,  28,    1,  15, 22,  28,    2,  17, 14,  28,
-      5,  1,  120, 30,    9,  4,  43,  26,    17, 1,  22,  28,    2,  19, 14,  28,
-      3,  4,  113, 28,    3,  11, 44,  26,    17, 4,  21,  26,    9,  16, 13,  26,
-      3,  5,  107, 28,    3,  13, 41,  26,    15, 5,  24,  30,    15, 10, 15,  28,
-      4,  4,  116, 28,    17, 0,  42,  26,    17, 6,  22,  28,    19, 6,  16,  30,
-      2,  7,  111, 28,    17, 0,  46,  28,    7,  16, 24,  30,    34, 0,  13,  24,
-      4,  5,  121, 30,    4,  14, 47,  28,    11, 14, 24,  30,    16, 14, 15,  30,
-      6,  4,  117, 30,    6,  14, 45,  28,    11, 16, 24,  30,    30, 2,  16,  30,
-      8,  4,  106, 26,    8,  13, 47,  28,    7,  22, 24,  30,    22, 13, 15,  30,
-      10, 2,  114, 28,    19, 4,  46,  28,    28, 6,  22,  28,    33, 4,  16,  30,
-      8,  4,  122, 30,    22, 3,  45,  28,    8,  26, 23,  30,    12, 28, 15,  30,
-      3,  10, 117, 30,    3,  23, 45,  28,    4,  31, 24,  30,    11, 31, 15,  30,
-      7,  7,  116, 30,    21, 7,  45,  28,    1,  37, 23,  30,    19, 26, 15,  30,
-      5,  10, 115, 30,    19, 10, 47,  28,    15, 25, 24,  30,    23, 25, 15,  30,
-      13, 3,  115, 30,    2,  29, 46,  28,    42, 1,  24,  30,    23, 28, 15,  30,
-      17, 0,  115, 30,    10, 23, 46,  28,    10, 35, 24,  30,    19, 35, 15,  30,
-      17, 1,  115, 30,    14, 21, 46,  28,    29, 19, 24,  30,    11, 46, 15,  30,
-      13, 6,  115, 30,    14, 23, 46,  28,    44, 7,  24,  30,    59, 1,  16,  30,
-      12, 7,  121, 30,    12, 26, 47,  28,    39, 14, 24,  30,    22, 41, 15,  30,
-      6,  14, 121, 30,    6,  34, 47,  28,    46, 10, 24,  30,    2,  64, 15,  30,
-      17, 4,  122, 30,    29, 14, 46,  28,    49, 10, 24,  30,    24, 46, 15,  30,
-      4,  18, 122, 30,    13, 32, 46,  28,    48, 14, 24,  30,    42, 32, 15,  30,
-      20, 4,  117, 30,    40, 7,  47,  28,    43, 22, 24,  30,    10, 67, 15,  30,
-      19, 6,  118, 30,    18, 31, 47,  28,    34, 34, 24,  30,    20, 61, 15,  30
+      1, 0, 19, 7, 1, 0, 16, 10, 1, 0, 13, 13, 1, 0, 9, 17,
+      1, 0, 34, 10, 1, 0, 28, 16, 1, 0, 22, 22, 1, 0, 16, 28,
+      1, 0, 55, 15, 1, 0, 44, 26, 2, 0, 17, 18, 2, 0, 13, 22,
+      1, 0, 80, 20, 2, 0, 32, 18, 2, 0, 24, 26, 4, 0, 9, 16,
+      1, 0, 108, 26, 2, 0, 43, 24, 2, 2, 15, 18, 2, 2, 11, 22,
+      2, 0, 68, 18, 4, 0, 27, 16, 4, 0, 19, 24, 4, 0, 15, 28,
+      2, 0, 78, 20, 4, 0, 31, 18, 2, 4, 14, 18, 4, 1, 13, 26,
+      2, 0, 97, 24, 2, 2, 38, 22, 4, 2, 18, 22, 4, 2, 14, 26,
+      2, 0, 116, 30, 3, 2, 36, 22, 4, 4, 16, 20, 4, 4, 12, 24,
+      2, 2, 68, 18, 4, 1, 43, 26, 6, 2, 19, 24, 6, 2, 15, 28,
+      4, 0, 81, 20, 1, 4, 50, 30, 4, 4, 22, 28, 3, 8, 12, 24,
+      2, 2, 92, 24, 6, 2, 36, 22, 4, 6, 20, 26, 7, 4, 14, 28,
+      4, 0, 107, 26, 8, 1, 37, 22, 8, 4, 20, 24, 12, 4, 11, 22,
+      3, 1, 115, 30, 4, 5, 40, 24, 11, 5, 16, 20, 11, 5, 12, 24,
+      5, 1, 87, 22, 5, 5, 41, 24, 5, 7, 24, 30, 11, 7, 12, 24,
+      5, 1, 98, 24, 7, 3, 45, 28, 15, 2, 19, 24, 3, 13, 15, 30,
+      1, 5, 107, 28, 10, 1, 46, 28, 1, 15, 22, 28, 2, 17, 14, 28,
+      5, 1, 120, 30, 9, 4, 43, 26, 17, 1, 22, 28, 2, 19, 14, 28,
+      3, 4, 113, 28, 3, 11, 44, 26, 17, 4, 21, 26, 9, 16, 13, 26,
+      3, 5, 107, 28, 3, 13, 41, 26, 15, 5, 24, 30, 15, 10, 15, 28,
+      4, 4, 116, 28, 17, 0, 42, 26, 17, 6, 22, 28, 19, 6, 16, 30,
+      2, 7, 111, 28, 17, 0, 46, 28, 7, 16, 24, 30, 34, 0, 13, 24,
+      4, 5, 121, 30, 4, 14, 47, 28, 11, 14, 24, 30, 16, 14, 15, 30,
+      6, 4, 117, 30, 6, 14, 45, 28, 11, 16, 24, 30, 30, 2, 16, 30,
+      8, 4, 106, 26, 8, 13, 47, 28, 7, 22, 24, 30, 22, 13, 15, 30,
+      10, 2, 114, 28, 19, 4, 46, 28, 28, 6, 22, 28, 33, 4, 16, 30,
+      8, 4, 122, 30, 22, 3, 45, 28, 8, 26, 23, 30, 12, 28, 15, 30,
+      3, 10, 117, 30, 3, 23, 45, 28, 4, 31, 24, 30, 11, 31, 15, 30,
+      7, 7, 116, 30, 21, 7, 45, 28, 1, 37, 23, 30, 19, 26, 15, 30,
+      5, 10, 115, 30, 19, 10, 47, 28, 15, 25, 24, 30, 23, 25, 15, 30,
+      13, 3, 115, 30, 2, 29, 46, 28, 42, 1, 24, 30, 23, 28, 15, 30,
+      17, 0, 115, 30, 10, 23, 46, 28, 10, 35, 24, 30, 19, 35, 15, 30,
+      17, 1, 115, 30, 14, 21, 46, 28, 29, 19, 24, 30, 11, 46, 15, 30,
+      13, 6, 115, 30, 14, 23, 46, 28, 44, 7, 24, 30, 59, 1, 16, 30,
+      12, 7, 121, 30, 12, 26, 47, 28, 39, 14, 24, 30, 22, 41, 15, 30,
+      6, 14, 121, 30, 6, 34, 47, 28, 46, 10, 24, 30, 2, 64, 15, 30,
+      17, 4, 122, 30, 29, 14, 46, 28, 49, 10, 24, 30, 24, 46, 15, 30,
+      4, 18, 122, 30, 13, 32, 46, 28, 48, 14, 24, 30, 42, 32, 15, 30,
+      20, 4, 117, 30, 40, 7, 47, 28, 43, 22, 24, 30, 10, 67, 15, 30,
+      19, 6, 118, 30, 18, 31, 47, 28, 34, 34, 24, 30, 20, 61, 15, 30
     ],
 
     /**
@@ -682,7 +694,7 @@
    * @class
    * @extends Nevis
    */
-  var Frame = lite.extend(function(options) {
+  var Frame = lite.extend(function (options) {
     var dataBlock, eccBlock, index, neccBlock1, neccBlock2;
     var valueLength = options.value.length;
 
@@ -692,6 +704,9 @@
     this._value = options.value;
     this._version = 0;
     this._stringBuffer = [];
+
+    /** add LabelText */
+    this._label = options.label;
 
     while (this._version < 40) {
       this._version++;
@@ -756,7 +771,7 @@
     this._finish();
   }, {
 
-    _addAlignment: function(x, y) {
+    _addAlignment: function (x, y) {
       var i;
       var buffer = this.buffer;
       var width = this.width;
@@ -778,7 +793,7 @@
       }
     },
 
-    _appendData: function(data, dataLength, ecc, eccLength) {
+    _appendData: function (data, dataLength, ecc, eccLength) {
       var bit, i, j;
       var polynomial = this._polynomial;
       var stringBuffer = this._stringBuffer;
@@ -805,7 +820,7 @@
       }
     },
 
-    _appendEccToData: function() {
+    _appendEccToData: function () {
       var i;
       var data = 0;
       var dataBlock = this._dataBlock;
@@ -827,141 +842,141 @@
       }
     },
 
-    _applyMask: function(mask) {
+    _applyMask: function (mask) {
       var r3x, r3y, x, y;
       var buffer = this.buffer;
       var width = this.width;
 
       switch (mask) {
-      case 0:
-        for (y = 0; y < width; y++) {
-          for (x = 0; x < width; x++) {
-            if (!((x + y) & 1) && !this._isMasked(x, y)) {
-              buffer[x + (y * width)] ^= 1;
+        case 0:
+          for (y = 0; y < width; y++) {
+            for (x = 0; x < width; x++) {
+              if (!((x + y) & 1) && !this._isMasked(x, y)) {
+                buffer[x + (y * width)] ^= 1;
+              }
             }
           }
-        }
 
-        break;
-      case 1:
-        for (y = 0; y < width; y++) {
-          for (x = 0; x < width; x++) {
-            if (!(y & 1) && !this._isMasked(x, y)) {
-              buffer[x + (y * width)] ^= 1;
+          break;
+        case 1:
+          for (y = 0; y < width; y++) {
+            for (x = 0; x < width; x++) {
+              if (!(y & 1) && !this._isMasked(x, y)) {
+                buffer[x + (y * width)] ^= 1;
+              }
             }
           }
-        }
 
-        break;
-      case 2:
-        for (y = 0; y < width; y++) {
-          for (r3x = 0, x = 0; x < width; x++, r3x++) {
-            if (r3x === 3) {
-              r3x = 0;
-            }
+          break;
+        case 2:
+          for (y = 0; y < width; y++) {
+            for (r3x = 0, x = 0; x < width; x++, r3x++) {
+              if (r3x === 3) {
+                r3x = 0;
+              }
 
-            if (!r3x && !this._isMasked(x, y)) {
-              buffer[x + (y * width)] ^= 1;
-            }
-          }
-        }
-
-        break;
-      case 3:
-        for (r3y = 0, y = 0; y < width; y++, r3y++) {
-          if (r3y === 3) {
-            r3y = 0;
-          }
-
-          for (r3x = r3y, x = 0; x < width; x++, r3x++) {
-            if (r3x === 3) {
-              r3x = 0;
-            }
-
-            if (!r3x && !this._isMasked(x, y)) {
-              buffer[x + (y * width)] ^= 1;
+              if (!r3x && !this._isMasked(x, y)) {
+                buffer[x + (y * width)] ^= 1;
+              }
             }
           }
-        }
 
-        break;
-      case 4:
-        for (y = 0; y < width; y++) {
-          for (r3x = 0, r3y = (y >> 1) & 1, x = 0; x < width; x++, r3x++) {
-            if (r3x === 3) {
-              r3x = 0;
-              r3y = !r3y;
+          break;
+        case 3:
+          for (r3y = 0, y = 0; y < width; y++, r3y++) {
+            if (r3y === 3) {
+              r3y = 0;
             }
 
-            if (!r3y && !this._isMasked(x, y)) {
-              buffer[x + (y * width)] ^= 1;
-            }
-          }
-        }
+            for (r3x = r3y, x = 0; x < width; x++, r3x++) {
+              if (r3x === 3) {
+                r3x = 0;
+              }
 
-        break;
-      case 5:
-        for (r3y = 0, y = 0; y < width; y++, r3y++) {
-          if (r3y === 3) {
-            r3y = 0;
-          }
-
-          for (r3x = 0, x = 0; x < width; x++, r3x++) {
-            if (r3x === 3) {
-              r3x = 0;
-            }
-
-            if (!((x & y & 1) + !(!r3x | !r3y)) && !this._isMasked(x, y)) {
-              buffer[x + (y * width)] ^= 1;
+              if (!r3x && !this._isMasked(x, y)) {
+                buffer[x + (y * width)] ^= 1;
+              }
             }
           }
-        }
 
-        break;
-      case 6:
-        for (r3y = 0, y = 0; y < width; y++, r3y++) {
-          if (r3y === 3) {
-            r3y = 0;
-          }
+          break;
+        case 4:
+          for (y = 0; y < width; y++) {
+            for (r3x = 0, r3y = (y >> 1) & 1, x = 0; x < width; x++, r3x++) {
+              if (r3x === 3) {
+                r3x = 0;
+                r3y = !r3y;
+              }
 
-          for (r3x = 0, x = 0; x < width; x++, r3x++) {
-            if (r3x === 3) {
-              r3x = 0;
-            }
-
-            if (!((x & y & 1) + (r3x && r3x === r3y) & 1) && !this._isMasked(x, y)) {
-              buffer[x + (y * width)] ^= 1;
+              if (!r3y && !this._isMasked(x, y)) {
+                buffer[x + (y * width)] ^= 1;
+              }
             }
           }
-        }
 
-        break;
-      case 7:
-        for (r3y = 0, y = 0; y < width; y++, r3y++) {
-          if (r3y === 3) {
-            r3y = 0;
-          }
-
-          for (r3x = 0, x = 0; x < width; x++, r3x++) {
-            if (r3x === 3) {
-              r3x = 0;
+          break;
+        case 5:
+          for (r3y = 0, y = 0; y < width; y++, r3y++) {
+            if (r3y === 3) {
+              r3y = 0;
             }
 
-            if (!((r3x && r3x === r3y) + (x + y & 1) & 1) && !this._isMasked(x, y)) {
-              buffer[x + (y * width)] ^= 1;
+            for (r3x = 0, x = 0; x < width; x++, r3x++) {
+              if (r3x === 3) {
+                r3x = 0;
+              }
+
+              if (!((x & y & 1) + !(!r3x | !r3y)) && !this._isMasked(x, y)) {
+                buffer[x + (y * width)] ^= 1;
+              }
             }
           }
-        }
 
-        break;
+          break;
+        case 6:
+          for (r3y = 0, y = 0; y < width; y++, r3y++) {
+            if (r3y === 3) {
+              r3y = 0;
+            }
+
+            for (r3x = 0, x = 0; x < width; x++, r3x++) {
+              if (r3x === 3) {
+                r3x = 0;
+              }
+
+              if (!((x & y & 1) + (r3x && r3x === r3y) & 1) && !this._isMasked(x, y)) {
+                buffer[x + (y * width)] ^= 1;
+              }
+            }
+          }
+
+          break;
+        case 7:
+          for (r3y = 0, y = 0; y < width; y++, r3y++) {
+            if (r3y === 3) {
+              r3y = 0;
+            }
+
+            for (r3x = 0, x = 0; x < width; x++, r3x++) {
+              if (r3x === 3) {
+                r3x = 0;
+              }
+
+              if (!((r3x && r3x === r3y) + (x + y & 1) & 1) && !this._isMasked(x, y)) {
+                buffer[x + (y * width)] ^= 1;
+              }
+            }
+          }
+
+          break;
       }
     },
 
-    _calculateMaxLength: function() {
+    _calculateMaxLength: function () {
       return (this._dataBlock * (this._neccBlock1 + this._neccBlock2)) + this._neccBlock2;
     },
 
-    _calculatePolynomial: function() {
+    _calculatePolynomial: function () {
       var i, j;
       var eccBlock = this._eccBlock;
       var polynomial = this._polynomial;
@@ -985,7 +1000,7 @@
       }
     },
 
-    _checkBadness: function() {
+    _checkBadness: function () {
       var b, b1, h, x, y;
       var bad = 0;
       var badness = this._badness;
@@ -1002,9 +1017,9 @@
             buffer[x + 1 + (width * (y + 1))]) ||
             // All background colour.
             !(buffer[x + (width * y)] ||
-            buffer[x + 1 + (width * y)] ||
-            buffer[x + (width * (y + 1))] ||
-            buffer[x + 1 + (width * (y + 1))])) {
+              buffer[x + 1 + (width * y)] ||
+              buffer[x + (width * (y + 1))] ||
+              buffer[x + 1 + (width * (y + 1))])) {
             bad += Frame.N2;
           }
         }
@@ -1074,7 +1089,7 @@
       return bad;
     },
 
-    _convertBitStream: function(length) {
+    _convertBitStream: function (length) {
       var bit, i;
       var ecc = this._ecc;
       var version = this._version;
@@ -1136,7 +1151,7 @@
       }
     },
 
-    _getBadness: function(length) {
+    _getBadness: function (length) {
       var i;
       var badRuns = 0;
       var badness = this._badness;
@@ -1155,8 +1170,8 @@
           badness[i - 1] * 3 === badness[i] &&
           // Background around the foreground pattern? Not part of the specs.
           (badness[i - 3] === 0 || i + 3 > length ||
-          badness[i - 3] * 3 >= badness[i] * 4 ||
-          badness[i + 3] * 3 >= badness[i] * 4)) {
+            badness[i - 3] * 3 >= badness[i] * 4 ||
+            badness[i + 3] * 3 >= badness[i] * 4)) {
           badRuns += Frame.N3;
         }
       }
@@ -1164,7 +1179,7 @@
       return badRuns;
     },
 
-    _finish: function() {
+    _finish: function () {
       // Save pre-mask copy of frame.
       this._stringBuffer = this.buffer.slice();
 
@@ -1235,7 +1250,7 @@
       }
     },
 
-    _interleaveBlocks: function() {
+    _interleaveBlocks: function () {
       var i, j;
       var dataBlock = this._dataBlock;
       var ecc = this._ecc;
@@ -1269,7 +1284,7 @@
       this._stringBuffer = ecc;
     },
 
-    _insertAlignments: function() {
+    _insertAlignments: function () {
       var i, x, y;
       var version = this._version;
       var width = this.width;
@@ -1278,7 +1293,7 @@
         i = Alignment_1.BLOCK[version];
         y = width - 7;
 
-        for (;;) {
+        for (; ;) {
           x = width - 7;
 
           while (x > i - 3) {
@@ -1303,7 +1318,7 @@
       }
     },
 
-    _insertFinders: function() {
+    _insertFinders: function () {
       var i, j, x, y;
       var buffer = this.buffer;
       var width = this.width;
@@ -1344,7 +1359,7 @@
       }
     },
 
-    _insertTimingGap: function() {
+    _insertTimingGap: function () {
       var x, y;
       var width = this.width;
 
@@ -1361,7 +1376,7 @@
       }
     },
 
-    _insertTimingRowAndColumn: function() {
+    _insertTimingRowAndColumn: function () {
       var x;
       var buffer = this.buffer;
       var width = this.width;
@@ -1377,7 +1392,7 @@
       }
     },
 
-    _insertVersion: function() {
+    _insertVersion: function () {
       var i, j, x, y;
       var buffer = this.buffer;
       var version = this._version;
@@ -1401,13 +1416,13 @@
       }
     },
 
-    _isMasked: function(x, y) {
+    _isMasked: function (x, y) {
       var bit = Frame._getMaskBit(x, y);
 
       return this._mask[bit] === 1;
     },
 
-    _pack: function() {
+    _pack: function () {
       var bit, i, j;
       var k = 1;
       var v = 1;
@@ -1464,7 +1479,7 @@
       }
     },
 
-    _reverseMask: function() {
+    _reverseMask: function () {
       var x, y;
       var width = this.width;
 
@@ -1482,13 +1497,13 @@
       }
     },
 
-    _setMask: function(x, y) {
+    _setMask: function (x, y) {
       var bit = Frame._getMaskBit(x, y);
 
       this._mask[bit] = 1;
     },
 
-    _syncMask: function() {
+    _syncMask: function () {
       var x, y;
       var width = this.width;
 
@@ -1503,7 +1518,7 @@
 
   }, {
 
-    _createArray: function(length) {
+    _createArray: function (length) {
       var i;
       var array = [];
 
@@ -1514,7 +1529,7 @@
       return array;
     },
 
-    _getMaskBit: function(x, y) {
+    _getMaskBit: function (x, y) {
       var bit;
 
       if (x > y) {
@@ -1531,7 +1546,7 @@
       return bit;
     },
 
-    _modN: function(x) {
+    _modN: function (x) {
       while (x >= 255) {
         x -= 255;
         x = (x >> 8) + (x & 255);
@@ -1573,21 +1588,21 @@
     /**
      * @override
      */
-    draw: function() {
+    draw: function () {
       this.element.src = this.qrious.toDataURL();
     },
 
     /**
      * @override
      */
-    reset: function() {
+    reset: function () {
       this.element.src = '';
     },
 
     /**
      * @override
      */
-    resize: function() {
+    resize: function () {
       var element = this.element;
 
       element.width = element.height = this.qrious.size;
@@ -1618,7 +1633,7 @@
    * @class
    * @extends Nevis
    */
-  var Option = lite.extend(function(name, modifiable, defaultValue, valueTransformer) {
+  var Option = lite.extend(function (name, modifiable, defaultValue, valueTransformer) {
     /**
      * The name for this {@link Option}.
      *
@@ -1660,7 +1675,7 @@
      * @public
      * @memberof Option#
      */
-    transform: function(value) {
+    transform: function (value) {
       var transformer = this._valueTransformer;
       if (typeof transformer === 'function') {
         return transformer(value, this);
@@ -1704,7 +1719,7 @@
      * @static
      * @memberof Utilities
      */
-    abs: function(value) {
+    abs: function (value) {
       return value != null ? Math.abs(value) : null;
     },
 
@@ -1719,7 +1734,7 @@
      * @static
      * @memberof Utilities
      */
-    hasOwn: function(object, name) {
+    hasOwn: function (object, name) {
       return Object.prototype.hasOwnProperty.call(object, name);
     },
 
@@ -1731,7 +1746,7 @@
      * @static
      * @memberof Utilities
      */
-    noop: function() {},
+    noop: function () { },
 
     /**
      * Transforms the specified <code>string</code> to upper case while remaining null-safe.
@@ -1742,7 +1757,7 @@
      * @static
      * @memberof Utilities
      */
-    toUpperCase: function(string) {
+    toUpperCase: function (string) {
       return string != null ? string.toUpperCase() : null;
     }
 
@@ -1760,7 +1775,7 @@
    * @class
    * @extends Nevis
    */
-  var OptionManager = lite.extend(function(options) {
+  var OptionManager = lite.extend(function (options) {
     /**
      * The available options for this {@link OptionManager}.
      *
@@ -1770,7 +1785,7 @@
      */
     this.options = {};
 
-    options.forEach(function(option) {
+    options.forEach(function (option) {
       this.options[option.name] = option;
     }, this);
   }, {
@@ -1784,7 +1799,7 @@
      * @public
      * @memberof OptionManager#
      */
-    exists: function(name) {
+    exists: function (name) {
       return this.options[name] != null;
     },
 
@@ -1797,7 +1812,7 @@
      * @public
      * @memberof OptionManager#
      */
-    get: function(name, target) {
+    get: function (name, target) {
       return OptionManager._get(this.options[name], target);
     },
 
@@ -1809,7 +1824,7 @@
      * @public
      * @memberof OptionManager#
      */
-    getAll: function(target) {
+    getAll: function (target) {
       var name;
       var options = this.options;
       var result = {};
@@ -1846,7 +1861,7 @@
      * @public
      * @memberof OptionManager#
      */
-    init: function(options, target, changeHandler) {
+    init: function (options, target, changeHandler) {
       if (typeof changeHandler !== 'function') {
         changeHandler = Utilities_1.noop;
       }
@@ -1887,7 +1902,7 @@
      * @public
      * @memberof OptionManager#
      */
-    set: function(name, value, target) {
+    set: function (name, value, target) {
       return this._set(name, value, target);
     },
 
@@ -1913,11 +1928,11 @@
      * @public
      * @memberof OptionManager#
      */
-    setAll: function(options, target) {
+    setAll: function (options, target) {
       return this._setAll(options, target);
     },
 
-    _set: function(name, value, target, allowUnmodifiable) {
+    _set: function (name, value, target, allowUnmodifiable) {
       var option = this.options[name];
       if (!option) {
         throw new Error('Invalid option: ' + name);
@@ -1929,7 +1944,7 @@
       return OptionManager._set(option, value, target);
     },
 
-    _setAll: function(options, target, allowUnmodifiable) {
+    _setAll: function (options, target, allowUnmodifiable) {
       if (!options) {
         return false;
       }
@@ -1948,15 +1963,15 @@
 
   }, {
 
-    _createAccessor: function(option, target, changeHandler) {
+    _createAccessor: function (option, target, changeHandler) {
       var descriptor = {
-        get: function() {
+        get: function () {
           return OptionManager._get(option, target);
         }
       };
 
       if (option.modifiable) {
-        descriptor.set = function(value) {
+        descriptor.set = function (value) {
           if (OptionManager._set(option, value, target)) {
             changeHandler(value, option);
           }
@@ -1966,11 +1981,11 @@
       Object.defineProperty(target, option.name, descriptor);
     },
 
-    _get: function(option, target) {
+    _get: function (option, target) {
       return target['_' + option.name];
     },
 
-    _set: function(option, value, target) {
+    _set: function (option, value, target) {
       var fieldName = '_' + option.name;
       var oldValue = target[fieldName];
       var newValue = option.transform(value != null ? value : option.defaultValue);
@@ -2001,7 +2016,7 @@
    * @class
    * @extends Nevis
    */
-  var ServiceManager = lite.extend(function() {
+  var ServiceManager = lite.extend(function () {
     this._services = {};
   }, {
 
@@ -2014,7 +2029,7 @@
      * @public
      * @memberof ServiceManager#
      */
-    getService: function(name) {
+    getService: function (name) {
       var service = this._services[name];
       if (!service) {
         throw new Error('Service is not being managed with name: ' + name);
@@ -2034,7 +2049,7 @@
      * @public
      * @memberof ServiceManager#
      */
-    setService: function(name, service) {
+    setService: function (name, service) {
       if (this._services[name]) {
         throw new Error('Service is already managed with name: ' + name);
       }
@@ -2058,7 +2073,10 @@
     new Option_1('mime', true, 'image/png'),
     new Option_1('padding', true, null, Utilities_1.abs),
     new Option_1('size', true, 100, Utilities_1.abs),
-    new Option_1('value', true, '')
+    new Option_1('value', true, ''),
+
+    /** labelText */
+    new Option_1('label', true, '')
   ]);
   var serviceManager = new ServiceManager_1();
 
@@ -2071,7 +2089,7 @@
    * @class
    * @extends Nevis
    */
-  var QRious = lite.extend(function(options) {
+  var QRious = lite.extend(function (options) {
     optionManager.init(options, this, this.update.bind(this));
 
     var element = optionManager.get('element', this);
@@ -2095,7 +2113,7 @@
      * @public
      * @memberof QRious#
      */
-    get: function() {
+    get: function () {
       return optionManager.getAll(this);
     },
 
@@ -2112,7 +2130,7 @@
      * @public
      * @memberof QRious#
      */
-    set: function(options) {
+    set: function (options) {
       if (optionManager.setAll(options, this)) {
         this.update();
       }
@@ -2126,7 +2144,7 @@
      * @public
      * @memberof QRious#
      */
-    toDataURL: function(mime) {
+    toDataURL: function (mime) {
       return this.canvas.toDataURL(mime || this.mime);
     },
 
@@ -2137,10 +2155,13 @@
      * @protected
      * @memberof QRious#
      */
-    update: function() {
+    update: function () {
       var frame = new Frame_1({
         level: this.level,
-        value: this.value
+        value: this.value,
+
+        /** LabelText */
+        label: this.label
       });
 
       this._canvasRenderer.render(frame);
@@ -2159,7 +2180,7 @@
      * @static
      * @memberof QRious
      */
-    use: function(service) {
+    use: function (service) {
       serviceManager.setService(service.getName(), service);
     }
 
@@ -2176,7 +2197,7 @@
        * @memberof QRious#
        * @alias canvas
        */
-      get: function() {
+      get: function () {
         return this._canvasRenderer.getElement();
       }
     },
@@ -2190,7 +2211,7 @@
        * @memberof QRious#
        * @alias image
        */
-      get: function() {
+      get: function () {
         return this._imageRenderer.getElement();
       }
     }
@@ -2214,6 +2235,7 @@
    * @property {number} [padding] - The padding for the QR code in pixels.
    * @property {number} [size=100] - The size of the QR code in pixels.
    * @property {string} [value=""] - The value to be encoded within the QR code.
+   * @property {string} [label=""] - The value to be label within the QR code.
    */
 
   var index = QRious_1$2;
@@ -2235,7 +2257,7 @@
      * @abstract
      * @memberof Service#
      */
-    getName: function() {}
+    getName: function () { }
 
   });
 
@@ -2260,7 +2282,7 @@
      * @abstract
      * @memberof ElementService#
      */
-    createCanvas: function() {},
+    createCanvas: function () { },
 
     /**
      * Creates an instance of a image element.
@@ -2272,12 +2294,12 @@
      * @abstract
      * @memberof ElementService#
      */
-    createImage: function() {},
+    createImage: function () { },
 
     /**
      * @override
      */
-    getName: function() {
+    getName: function () {
       return 'element';
     },
 
@@ -2292,7 +2314,7 @@
      * @abstract
      * @memberof ElementService#
      */
-    isCanvas: function(element) {},
+    isCanvas: function (element) { },
 
     /**
      * Returns whether the specified <code>element</code> is an image.
@@ -2305,7 +2327,7 @@
      * @abstract
      * @memberof ElementService#
      */
-    isImage: function(element) {}
+    isImage: function (element) { }
 
   });
 
@@ -2323,28 +2345,28 @@
     /**
      * @override
      */
-    createCanvas: function() {
+    createCanvas: function () {
       return document.createElement('canvas');
     },
 
     /**
      * @override
      */
-    createImage: function() {
+    createImage: function () {
       return document.createElement('img');
     },
 
     /**
      * @override
      */
-    isCanvas: function(element) {
+    isCanvas: function (element) {
       return element instanceof HTMLCanvasElement;
     },
 
     /**
      * @override
      */
-    isImage: function(element) {
+    isImage: function (element) {
       return element instanceof HTMLImageElement;
     }
 
